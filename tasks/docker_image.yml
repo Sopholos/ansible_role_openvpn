@@ -1,0 +1,9 @@
+---
+- name: install | deploy openvpn docker container
+  docker_container:
+    name: openvpn
+    image: tobefilledfurther
+    restart_policy: always
+    state: started
+    ports:
+      - "1688:1688"

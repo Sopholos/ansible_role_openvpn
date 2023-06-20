@@ -1,1 +1,1 @@
-# ansible_role_openvpn
+Role to install docker image with openvpn client inside
