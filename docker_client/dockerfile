@@ -1,7 +1,7 @@
 FROM ubuntu
 
 RUN apt update && \
-	apt install openvpn curl speedtest-cli -y
+	apt install openvpn curl speedtest-cli iptables iputils-ping -y
 
 COPY services /services
 COPY entrypoint.sh /entrypoint.sh
