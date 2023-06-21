@@ -60,6 +60,14 @@ fi
 # Hard update the local DNS nameserver
 echo 'nameserver 1.1.1.1' > /etc/resolv.conf
 
+# Custom scripts
+if [ ! -z "$PREFLIGHT_SCRIPT" ]; then
+	echo "
+	$TIMESTAMP --- Run custom scripts ---
+	"
+	$PREFLIGHT_SCRIPT
+fi
+
 # Kick off the connection
 echo "
 $TIMESTAMP --- Starting VPN Client ---

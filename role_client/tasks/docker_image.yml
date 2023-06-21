@@ -1,4 +1,45 @@
 ---
+- name: install | openvpn_client_docker_env
+  set_fact:
+    openvpn_client_docker_env: "{{ openvpn_client_docker_env }}"
+  vars:
+    openvpn_client_docker_env: "{{ openvpn_client_docker.env }}"
+      
+- block:  
+    - name: install | set_fact preflight_path
+      set_fact:
+        preflight_path: "{{ preflight_path }}"
+        preflight_container_config_path: "/root/preflight.sh"
+      vars:
+        preflight_path: "/etc/openvpn/{{ openvpn_client_docker.name }}/preflight.sh"
+
+    - name: install | make sure destination dir exists
+      file:
+        path: "{{ preflight_path | dirname }}"
+        mode: 755
+        state: directory
+
+    - name: install | template file to preflight.sh
+      template:
+        src: preflight.sh.j2
+        dest: "{{ preflight_path }}"
+        mode: 755
+        
+    - name: Print openvpn_client_docker_env
+      debug:
+        msg: "{{ openvpn_client_docker_env }}"
+
+    - name: install | extend env
+      set_fact:
+        openvpn_client_docker_env: "{{ openvpn_client_docker_env | combine( { 'PREFLIGHT_SCRIPT': preflight_container_config_path } ) }}"
+    
+    - name: Print openvpn_client_docker_env
+      debug:
+        msg: "{{ openvpn_client_docker_env }}"
+
+    # - meta: end_play
+  when: openvpn_client_docker.preflightbash is defined  
+
 - name: Log into private registry and force re-authorization
   docker_login:
     registry: "{{ openvpn_client_docker.auth.registry |default(omit) }}"
@@ -14,7 +55,9 @@
     restart_policy: always
     state: started
     ports: "{{ openvpn_client_docker.ports }}"
-    env: "{{ openvpn_client_docker.env }}"
+    env: "{{ openvpn_client_docker_env }}"
+    volumes:
+      - "{{ preflight_path | dirname }}:{{ preflight_container_config_path | dirname }}:ro"
     capabilities:
       - NET_ADMIN
       - NET_RAW
