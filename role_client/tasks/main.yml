@@ -4,4 +4,5 @@
   loop_control:
      loop_var: openvpn_client_docker
   with_items: "{{ openvpn_client_dockers }}"
-  when: openvpn_client_dockers is defined  
+  when: openvpn_client_dockers is defined
+  no_log: true

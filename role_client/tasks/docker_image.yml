@@ -6,7 +6,6 @@
     password: "{{ openvpn_client_docker.auth.password |default(omit) }}"
     reauthorize: yes
   when: openvpn_client_docker.auth is defined
-  no_log: true
 
 - name: install | deploy docker container {{ openvpn_client_docker.name }}
   docker_container:
@@ -15,3 +14,4 @@
     restart_policy: always
     state: started
     ports: "{{ openvpn_client_docker.ports }}"
+    env: "{{ openvpn_client_docker.env }}"
