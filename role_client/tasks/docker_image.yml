@@ -15,3 +15,7 @@
     state: started
     ports: "{{ openvpn_client_docker.ports }}"
     env: "{{ openvpn_client_docker.env }}"
+    capabilities:
+      - NET_ADMIN
+      - NET_RAW
+    privileged: true
