@@ -1,9 +1,17 @@
 ---
-- name: install | deploy openvpn docker container
+- name: Log into private registry and force re-authorization
+  docker_login:
+    registry: "{{ openvpn_client_docker.auth.registry |default(omit) }}"
+    username: "{{ openvpn_client_docker.auth.username |default(omit) }}"
+    password: "{{ openvpn_client_docker.auth.password |default(omit) }}"
+    reauthorize: yes
+  when: openvpn_client_docker.auth is defined
+  no_log: true
+
+- name: install | deploy docker container {{ openvpn_client_docker.name }}
   docker_container:
-    name: openvpn
-    image: tobefilledfurther
+    name: "{{ openvpn_client_docker.name }}"
+    image: "{{ openvpn_client_docker.image }}"
     restart_policy: always
     state: started
-    ports:
-      - "1688:1688"
+    ports: "{{ openvpn_client_docker.ports }}"
