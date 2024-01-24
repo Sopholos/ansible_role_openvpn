@@ -53,6 +53,7 @@
     name: "{{ openvpn_client_docker.name }}"
     image: "{{ openvpn_client_docker.image }}"
     restart_policy: always
+    pull: true
     state: started
     ports: "{{ openvpn_client_docker.ports }}"
     env: "{{ openvpn_client_docker_env }}"
