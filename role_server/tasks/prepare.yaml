@@ -1,9 +1,12 @@
 ---
-- name: install | Ensure project directory exists
+- name: install | Ensure directories exists
   file:
-    path: "{{ openvpn_server_compose_path }}"
+    path: "{{ item }}"
     state: directory
     mode: '0755'
+  loop:
+    - "{{ openvpn_server_root_path }}/config"
+    - "{{ openvpn_server_compose_path }}"
 
 - name: install | template docker-compose.yml
   template:
@@ -25,3 +28,8 @@
     dest: "{{ openvpn_server_conf_path }}"
     force: false
   notify: restart-ovpn
+
+- name: install | Deploy Docker Compose stack
+  community.docker.docker_compose_v2:
+    project_src: "{{ openvpn_server_compose_path }}"
+    state: present
