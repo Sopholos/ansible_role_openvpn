@@ -1,0 +1,8 @@
+---
+- name: Compose
+  import_tasks: task_prepare.yaml
+  tags: [ prepare ]
+
+- name: Compose
+  import_tasks: task_compose.yaml
+  tags: [ install ]

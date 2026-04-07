@@ -1,0 +1,10 @@
+---
+- name: install | Deploy Docker Compose stack
+  community.docker.docker_compose_v2:
+    project_src: "{{ openvpn_server_compose_path }}"
+    state: present
+
+- name: install | Wait for UI to be ready
+  wait_for:
+    port: "{{ openvpn_server_ui_port }}"
+    delay: 5

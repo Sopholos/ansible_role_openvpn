@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+{{ ansible_managed | comment }}
+
+{{ openvpn_server_compose | to_nice_yaml(indent=2) }}

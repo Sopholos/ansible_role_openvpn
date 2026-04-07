@@ -1,0 +1,59 @@
+---
+openvpn_server_admin_user: ovpn
+
+openvpn_server_root_path: "~/ovpn-data"
+
+openvpn_server_compose_path: "~/ovpn-data/openvpn-stack"
+
+openvpn_server_fw_rules_sh_path: "{{ openvpn_server_root_path }}/fw-rules.sh"
+openvpn_server_fw_rules: ""
+openvpn_server_conf_path: "{{ openvpn_server_root_path }}/server.conf"
+
+openvpn_server_ui_port: 8080
+openvpn_server_vpn_port: 1194
+
+openvpn_server_compose:
+  # version: "3.5"
+  services:
+    openvpn:
+      image: d3vilh/openvpn-server:latest
+      container_name: openvpn
+      privileged: true
+      ports:
+        - "{{ openvpn_server_vpn_port }}:1194/udp"
+      environment:
+        INTERFACE: eth0
+        TRUST_SUB: 10.0.70.0/24
+        GUEST_SUB: 10.0.71.0/24
+        HOME_SUB: 192.168.88.0/24
+      volumes:
+        - "{{ openvpn_server_root_path }}/pki:/etc/openvpn/pki"
+        - "{{ openvpn_server_root_path }}/clients:/etc/openvpn/clients"
+        - "{{ openvpn_server_root_path }}/config:/etc/openvpn/config"
+        - "{{ openvpn_server_root_path }}/staticclients:/etc/openvpn/staticclients"
+        - "{{ openvpn_server_root_path }}/log:/var/log/openvpn"
+        - "{{ openvpn_server_fw_rules_sh_path }}:/opt/app/fw-rules.sh"
+        - "{{ openvpn_server_conf_path }}/:/etc/openvpn/server.conf"
+      cap_add:
+        - NET_ADMIN
+      restart: always
+      devices:
+        - "/dev/net/tun:/dev/net/tun"
+
+    openvpn-ui:
+      image: d3vilh/openvpn-ui:latest
+      container_name: openvpn-ui
+      depends_on:
+        - openvpn
+      privileged: true
+      ports:
+        - "{{ openvpn_server_ui_port }}:8080"
+      volumes:
+        - "{{ openvpn_server_root_path }}/:/etc/openvpn"
+        - "{{ openvpn_server_root_path }}/db:/opt/openvpn-ui/db"
+        - "{{ openvpn_server_root_path }}/pki:/usr/share/easy-rsa/pki"
+        - "{{ openvpn_server_root_path }}/var/run/docker.sock:/var/run/docker.sock:ro"
+      environment:
+        - "OPENVPN_ADMIN_USERNAME={{ openvpn_server_admin_user }}"
+        - "OPENVPN_ADMIN_PASSWORD={{ openvpn_server_admin_password }}"
+      restart: always
