@@ -1,8 +1,8 @@
 ---
-- name: Compose
-  import_tasks: task_prepare.yaml
+- name: Prepare
+  import_tasks: prepare.yaml
   tags: [ prepare ]
 
-- name: Compose
-  import_tasks: task_compose.yaml
-  tags: [ install ]
+- name: Config
+  import_tasks: config.yaml
+  tags: [ config ]

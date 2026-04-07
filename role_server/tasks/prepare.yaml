@@ -10,15 +10,18 @@
     src: ovpn_compose.yaml.j2
     dest: "{{ openvpn_server_compose_path }}/docker-compose.yml"
     mode: 755
+  notify: restart-ovpn
 
 - name: install | template fw-rules.sh.j2
   template:
     src: fw-rules.sh.j2
     dest: "{{ openvpn_server_fw_rules_sh_path }}"
     mode: 755
+  notify: restart-ovpn
 
 - name: install | ensure file exists
   copy:
     content: ""
     dest: "{{ openvpn_server_conf_path }}"
     force: false
+  notify: restart-ovpn

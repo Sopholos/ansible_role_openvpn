@@ -1,0 +1,21 @@
+---
+- name: config | template client.conf
+  template:
+    src: client.conf.j2
+    dest: "{{ openvpn_server_root_path }}/config/client.conf"
+    mode: 0644
+  notify: restart-ovpn
+
+- name: config | template easy-rsa.vars
+  template:
+    src: easy-rsa.vars.j2
+    dest: "{{ openvpn_server_root_path }}/config/easy-rsa.vars"
+    mode: 0644
+  notify: restart-ovpn
+
+- name: config | template server.conf 
+  template:
+    src: server.conf.j2
+    dest: "{{ openvpn_server_conf_path }}"
+    mode: 0644
+  notify: restart-ovpn
