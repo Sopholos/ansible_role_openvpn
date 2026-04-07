@@ -12,6 +12,7 @@ openvpn_server_conf_path: "{{ openvpn_server_root_path }}/server.conf"
 openvpn_server_ui_port: 8080
 openvpn_server_vpn_port: 1194
 openvpn_server_vpn_port_proto: tcp
+openvpn_server_vpn_external: vpn.example.com
 
 openvpn_server_compose:
   # version: "3.5"
@@ -64,7 +65,7 @@ openvpn_server_client_conf: |-
   client
   dev tun
   proto {{ openvpn_server_vpn_port_proto }}
-  remote ov.sopholos.ru {{ openvpn_server_vpn_port }} {{ openvpn_server_vpn_port_proto }}
+  remote {{ openvpn_server_vpn_external }} {{ openvpn_server_vpn_port }} {{ openvpn_server_vpn_port_proto }}
   resolv-retry infinite
   user nobody
   group nogroup
